@@ -49,7 +49,7 @@ let sanFranAirport =
 */
 
 // We create the tile layer that will be the background of our map.  Dark map layer_style: dark-v10
-let streets = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+let light = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/light-v10/tiles/{z}/{x}/{y}?access_token={accessToken}', {
     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
     maxZoom: 18,
     // id: 'mapbox/streets-v11',  //street layer
@@ -70,30 +70,42 @@ attribution: 'Map data © <a href="https://www.openstreetmap.org/">OpenStreetMap
 
 // Create a baselayer to add maps options
 let baseMaps = {
-  "Street": streets,
-  "Dark": dark
+  "Day Navigation": light,
+  "Night Navigation": dark
 };
 
 // create map object
 let map = L.map('mapid', {
-  center: [30, 30],
+  center: [44, -80],
   zoom: 2,
-  layers: [streets]
+  layers: [dark]
 });
 
 // Pass our map layers into our layers control and add the layers control to the map.
 L.control.layers(baseMaps).addTo(map);
 
 // Accessing the airport GeoJSON URL
-let airportData = "https://raw.githubusercontent.com/cacostamx/Mapping_Earthquakes/Mapping_GeoJSON/majorAirports.json";
+//let airportData = "https://raw.githubusercontent.com/cacostamx/Mapping_Earthquakes/Mapping_GeoJSON/majorAirports.json";
+let torontoData = "https://raw.githubusercontent.com/cacostamx/Mapping_Earthquakes/Mapping_GeoJSON_Linestrings/torontoRoutes.json";
 
 // Grabbing GeoJSON data
-d3.json(airportData).then(function(data) {
+/*d3.json(airportData).then(function(data) {
   console.log(data);
   // Creating a GeoJSON layer with the retrieved data
   L.geoJSON(data, {
     onEachFeature: function(feature, layer) {
       layer.bindPopup("<h4> Airport Code: "+feature.properties.faa+"</h4><hr><h4>Airport name: "+feature.properties.name+"</h4>");
+    }
+  }).addTo(map);
+});
+*/
+d3.json(torontoData).then(function(data) {
+  console.log(data);
+  L.geoJSON(data, {
+    color: "#ffffa1", 
+    weight: 2,
+    onEachFeature: function(feature, layer) {
+      layer.bindPopup("<h4> Airline: "+feature.properties.airline+"</h4><hr><h4>Destination: "+feature.properties.dst+"</h4>");
     }
   }).addTo(map);
 });
