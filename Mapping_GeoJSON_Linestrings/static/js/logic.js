@@ -99,11 +99,28 @@ let torontoData = "https://raw.githubusercontent.com/cacostamx/Mapping_Earthquak
   }).addTo(map);
 });
 */
+
+// Create a style for the lines.
+let myStyle = {
+  color: "#ffffa1",
+  weight: 2
+}
+
+
 d3.json(torontoData).then(function(data) {
   console.log(data);
+  var colorLine = "";
+  //var stopsCount = [];
+  data.features.forEach(flight => {
+    if (flight.properties.stops === "0") {colorLine = "#ffffa1";}
+    else {colorLine = "red";}
+    // stopsCount.push(flight.properties.stops);
+    // console.log(stopsCount);
+  });
   L.geoJSON(data, {
-    color: "#ffffa1", 
-    weight: 2,
+    //color: colorLine, 
+    //weight: 2,
+    style: myStyle,
     onEachFeature: function(feature, layer) {
       layer.bindPopup("<h4> Airline: "+feature.properties.airline+"</h4><hr><h4>Destination: "+feature.properties.dst+"</h4>");
     }
