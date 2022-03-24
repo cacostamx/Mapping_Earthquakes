@@ -7,7 +7,7 @@ console.log("working");
 
 
 // Add GeoJSON data.
-let sanFranAirport =
+/*let sanFranAirport =
 {"type":"FeatureCollection","features":[{
     "type":"Feature",
     "properties":{
@@ -25,7 +25,7 @@ let sanFranAirport =
             "type":"Point",
             "coordinates":[-122.375,37.61899948120117]}}
 ]};
-
+*/
 // Grabbing our GeoJSON data.
 // L.geoJSON(sanFranAirport).addTo(map);   //This adds a marker to the map
 
@@ -49,7 +49,7 @@ let sanFranAirport =
 */
 
 // We create the tile layer that will be the background of our map.  Dark map layer_style: dark-v10
-let light = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/light-v10/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+let streets = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token={accessToken}', {
     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
     maxZoom: 18,
     // id: 'mapbox/streets-v11',  //street layer
@@ -62,7 +62,7 @@ let light = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/light-v10/tiles
 //streets.addTo(map);
 
 // We create the dark view tile layer that will be an option for our map.
-let dark = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/dark-v10/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+let satelliteStreets = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v11/tiles/{z}/{x}/{y}?access_token={accessToken}', {
 attribution: 'Map data © <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery (c) <a href="https://www.mapbox.com/">Mapbox</a>',
     maxZoom: 18,
     accessToken: API_KEY
@@ -70,15 +70,15 @@ attribution: 'Map data © <a href="https://www.openstreetmap.org/">OpenStreetMap
 
 // Create a baselayer to add maps options
 let baseMaps = {
-  "Day Navigation": light,
-  "Night Navigation": dark
+  "Streets": streets,
+  "Satellite Streets": satelliteStreets
 };
 
 // create map object
 let map = L.map('mapid', {
-  center: [44, -80],
-  zoom: 2,
-  layers: [dark]
+  center: [43.7, -79.3],
+  zoom: 11,
+  layers: [satelliteStreets]
 });
 
 // Pass our map layers into our layers control and add the layers control to the map.
@@ -86,7 +86,8 @@ L.control.layers(baseMaps).addTo(map);
 
 // Accessing the airport GeoJSON URL
 //let airportData = "https://raw.githubusercontent.com/cacostamx/Mapping_Earthquakes/Mapping_GeoJSON/majorAirports.json";
-let torontoData = "https://raw.githubusercontent.com/cacostamx/Mapping_Earthquakes/Mapping_GeoJSON_Linestrings/torontoRoutes.json";
+//let torontoData = "https://raw.githubusercontent.com/cacostamx/Mapping_Earthquakes/Mapping_GeoJSON_Linestrings/torontoRoutes.json";
+let torontoHoods = "https://raw.githubusercontent.com/cacostamx/Mapping_Earthquakes/Mapping_GeoJSON_Polygons/torontoNeighborhoods.json";
 
 // Grabbing GeoJSON data
 /*d3.json(airportData).then(function(data) {
@@ -102,27 +103,29 @@ let torontoData = "https://raw.githubusercontent.com/cacostamx/Mapping_Earthquak
 
 // Create a style for the lines.
 let myStyle = {
-  color: "#ffffa1",
-  weight: 2
+  color: "blue",
+  weight: 1,
+  fillColor: "yellow",
+  fillOpacity: 0.5
 }
 
 
-d3.json(torontoData).then(function(data) {
+d3.json(torontoHoods).then(function(data) {
   console.log(data);
-  var colorLine = "";
+  //var colorLine = "";
   //var stopsCount = [];
-  data.features.forEach(flight => {
-    if (flight.properties.stops === "0") {colorLine = "#ffffa1";}
-    else {colorLine = "red";}
+  //data.features.forEach(flight => {
+  //  if (flight.properties.stops === "0") {colorLine = "#ffffa1";}
+  //  else {colorLine = "red";}
     // stopsCount.push(flight.properties.stops);
     // console.log(stopsCount);
-  });
+  //});
   L.geoJSON(data, {
     //color: colorLine, 
     //weight: 2,
     style: myStyle,
     onEachFeature: function(feature, layer) {
-      layer.bindPopup("<h4> Airline: "+feature.properties.airline+"</h4><hr><h4>Destination: "+feature.properties.dst+"</h4>");
+      layer.bindPopup("<h4> Neigborhood: "+feature.properties.AREA_NAME+"</h4>");
     }
   }).addTo(map);
 });
